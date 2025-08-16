@@ -1,26 +1,50 @@
 import { useState } from "react";
-import LoginForm from "./components/LoginForm";
 import ConfigForm from "./components/ConfigForm";
-import FileUpload from "./components/FileUpload";
-import Results from "./components/Results";
-import { analyzeFile } from "./api";
+import BandPie from "./components/BandPie";
+import DistanceBar from "./components/DistanceBar";
+import DistanceByBand from "./components/DistanceByBand";
 
-function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [results, setResults] = useState(null);
-
-  if (!loggedIn) return <LoginForm onLogin={() => setLoggedIn(true)} />;
+export default function App() {
+  const [payload, setPayload] = useState(null);
+  const data = payload?.data;
+  const binKm = payload?.bin;
+  const total = (data && (data.total_qsos || data.total_spots)) || 0;
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold">FT8 Web Analyzer</h1>
-      <ConfigForm onAnalyze={async (config, file) => {
-        const res = await analyzeFile(config, file);
-        setResults(res);
-      }} />
-      {results && <Results data={results} />}
+    <div style={{ fontFamily: "sans-serif", padding: "1rem", maxWidth: 1200, margin: "0 auto" }}>
+      <h1>Propagation Analyzer</h1>
+      <ConfigForm onData={setPayload} />
+
+      {data && (
+        <>
+          <div style={{ marginTop: "1rem", padding: "0.75rem", background: "#f4f4f4", borderRadius: 8 }}>
+            <strong>Source:</strong> {data.source || "-"} &nbsp;|&nbsp;
+            <strong>Total:</strong> {total.toLocaleString()} &nbsp;|&nbsp;
+            <strong>Locator:</strong> {payload?.locator || "-"}
+          </div>
+
+          <div style={{ marginTop: "1rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+            <BandPie bands={data.bands} />
+            <div>
+              <h3>Distance histogram (bin ≈ {binKm} km)</h3>
+              <DistanceBar hist={data.distance_histogram} binKm={binKm} />
+            </div>
+          </div>
+
+          <div style={{ marginTop: "1.25rem" }}>
+            <h2>Per-band distance histograms</h2>
+            <DistanceByBand byBand={data.distance_histograms_by_band} binKm={binKm} />
+          </div>
+
+          <details style={{ marginTop: "1rem" }}>
+            <summary>Raw JSON (debug)</summary>
+            <pre style={{ background: "#eee", padding: "1rem" }}>
+              {JSON.stringify(data, null, 2)}
+            </pre>
+          </details>
+        </>
+      )}
     </div>
   );
 }
 
-export default App;
