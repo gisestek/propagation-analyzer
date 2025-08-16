@@ -13,37 +13,37 @@ Supports WSJT-X `ALL.TXT` and Log4OM `CSV`.
 Backend serves the built frontend.
 
 1) Build frontend
-
->cd frontend
->npm install
->npm run build
-
+```
+cd frontend
+npm install
+npm run build
+```
 2) Start backend
-
->cd ../backend
->python3 -m venv venv
->source venv/bin/activate
->pip install -r requirements.txt
->uvicorn main:app --host 0.0.0.0 --port 8000
-
+```
+cd ../backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --host 0.0.0.0 --port 8000
+```
 
 Open `http://<server>:8000/`
 
 ## Development (hot reload)
 
 Frontend (Vite):
-
->cd frontend
->npm install
->npm run dev
-
+```
+cd frontend
+npm install
+npm run dev
+```
 
 Backend:
-
->cd backend
->source venv/bin/activate
->uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-
+```
+cd backend
+source venv/bin/activate
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
 
 ## Usage
 1. Open the page.
