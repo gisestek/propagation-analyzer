@@ -1,0 +1,16 @@
+<!-- Propagation Analyzer icon – antenna + waves -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Waves -->
+  <g stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M136 220a120 120 0 0 1 240 0"></path>
+    <path d="M166 240a90 90 0 0 1 180 0"></path>
+    <path d="M196 260a60 60 0 0 1 120 0"></path>
+  </g>
+
+  <!-- Antenna mast -->
+  <rect x="244" y="260" width="24" height="170" rx="12" fill="currentColor"></rect>
+  <!-- Top node -->
+  <circle cx="256" cy="252" r="12" fill="currentColor"></circle>
+  <!-- Base -->
+  <path d="M208 430h96l18 40H190z" fill="currentColor"></path>
+</svg>

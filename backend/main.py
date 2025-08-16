@@ -47,3 +47,16 @@ async def analyze(
     except Exception as e:
         raise HTTPException(400, detail=f"Parse error: {e}")
 
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+
+# Serve frontend build
+frontend_path = os.path.join(os.path.dirname(__file__), "../frontend/dist")
+app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
+
+# Make sure / serves index.html
+@app.get("/")
+async def serve_index():
+    return FileResponse(os.path.join(frontend_path, "index.html"))
+

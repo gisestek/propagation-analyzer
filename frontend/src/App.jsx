@@ -1,47 +1,51 @@
 import { useState } from "react";
-import ConfigForm from "./components/ConfigForm";
+import UploadForm from "./components/UploadForm";
 import BandPie from "./components/BandPie";
 import DistanceBar from "./components/DistanceBar";
 import DistanceByBand from "./components/DistanceByBand";
+import UserGuide from "./components/UserGuide";
 
 export default function App() {
-  const [payload, setPayload] = useState(null);
-  const data = payload?.data;
-  const binKm = payload?.bin;
-  const total = (data && (data.total_qsos || data.total_spots)) || 0;
+  const [result, setResult] = useState(null);
+  const [view, setView] = useState("guide");
 
   return (
-    <div style={{ fontFamily: "sans-serif", padding: "1rem", maxWidth: 1200, margin: "0 auto" }}>
-      <h1>Propagation Analyzer</h1>
-      <ConfigForm onData={setPayload} />
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">📡 Propagation Analyzer</h1>
 
-      {data && (
+      <div className="flex gap-4 mb-4">
+        <button
+          onClick={() => setView("guide")}
+          className={`px-3 py-1 rounded ${view === "guide" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+        >
+          User Guide
+        </button>
+        <button
+          onClick={() => setView("analyze")}
+          className={`px-3 py-1 rounded ${view === "analyze" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+        >
+          Analyze
+        </button>
+      </div>
+
+      {view === "guide" && <UserGuide />}
+      {view === "analyze" && (
         <>
-          <div style={{ marginTop: "1rem", padding: "0.75rem", background: "#f4f4f4", borderRadius: 8 }}>
-            <strong>Source:</strong> {data.source || "-"} &nbsp;|&nbsp;
-            <strong>Total:</strong> {total.toLocaleString()} &nbsp;|&nbsp;
-            <strong>Locator:</strong> {payload?.locator || "-"}
-          </div>
-
-          <div style={{ marginTop: "1rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-            <BandPie bands={data.bands} />
-            <div>
-              <h3>Distance histogram (bin ≈ {binKm} km)</h3>
-              <DistanceBar hist={data.distance_histogram} binKm={binKm} />
+          <UploadForm onResult={setResult} />
+          
+          {result && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <BandPie bands={result.bands} />
+              <DistanceBar hist={result.distance_histogram} />  {/* <- hist, not histogram */}
             </div>
-          </div>
+          )}
 
-          <div style={{ marginTop: "1.25rem" }}>
-            <h2>Per-band distance histograms</h2>
-            <DistanceByBand byBand={data.distance_histograms_by_band} binKm={binKm} />
-          </div>
-
-          <details style={{ marginTop: "1rem" }}>
-            <summary>Raw JSON (debug)</summary>
-            <pre style={{ background: "#eee", padding: "1rem" }}>
-              {JSON.stringify(data, null, 2)}
-            </pre>
-          </details>
+          {result && (
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold mb-2">Per-band distance histograms</h2>
+              <DistanceByBand byBand={result.distance_histograms_by_band} /> {/* <- correct key + prop */}
+            </div>
+          )}
         </>
       )}
     </div>
