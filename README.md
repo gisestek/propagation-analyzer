@@ -2,8 +2,7 @@
 web service
 
 dependencies:
-python3.12-venv
-
+python3.12-venv nodejs npm
 
 
 Install:
